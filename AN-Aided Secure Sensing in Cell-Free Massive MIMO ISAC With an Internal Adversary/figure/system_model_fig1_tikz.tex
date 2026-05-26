@@ -1,0 +1,153 @@
+\begin{tikzpicture}[x=1mm,y=1mm,>=latex,font=\scriptsize,line cap=round,line join=round]
+\colorlet{txc}{blue!72!black}
+\colorlet{rxc}{orange!82!black}
+\colorlet{commc}{blue!70!black}
+\colorlet{sensc}{orange!86!black}
+\colorlet{anc}{violet!75!black}
+\colorlet{evec}{red!76!black}
+\colorlet{cloudc}{black!68}
+\colorlet{linkc}{black!18}
+
+\tikzset{
+    fronthaul/.style={linkc, dashed, line width=0.65pt},
+    comm/.style={commc, line width=1.05pt, -latex},
+    sensing/.style={sensc, dashed, line width=1.05pt, -latex},
+    an/.style={anc, dash dot, line width=1.05pt, -latex},
+    eve/.style={evec, dash pattern=on 4pt off 2pt on 0.8pt off 2pt, line width=1.05pt, -latex},
+    label/.style={align=center, text=black}
+}
+
+% Edge cloud and fronthaul links.
+\draw[cloudc, line width=0.8pt, fill=black!2]
+    (31,62) .. controls (32,68) and (39,70) .. (45,66)
+    .. controls (50,71) and (61,69) .. (63,62)
+    .. controls (72,61) and (73,51) .. (64,49)
+    .. controls (62,42) and (50,42) .. (47,47)
+    .. controls (42,43) and (32,45) .. (33,53)
+    .. controls (28,55) and (28,60) .. cycle;
+\draw[cloudc, fill=black!8, line width=0.7pt] (45.3,52.8) rectangle (50.3,62.0);
+\draw[cloudc, line width=0.7pt] (46.7,60.2) -- (48.9,60.2);
+\draw[cloudc, line width=0.7pt] (46.0,58.9) -- (49.6,58.9);
+\node[label, font=\footnotesize] at (48,49.8) {Edge Cloud};
+
+\coordinate (cloudL) at (34,53);
+\coordinate (cloudM) at (48,47);
+\coordinate (cloudR) at (63,53);
+
+% AP icon helper: radio head, mast, and antenna.
+\def\TxAP#1#2#3{%
+    \coordinate (#1) at (#2,#3);
+    \draw[txc, fill=blue!9, line width=0.8pt] ($(#1)+(-1.4,-2.2)$) rectangle ($(#1)+(1.4,1.4)$);
+    \draw[txc, line width=0.8pt] ($(#1)+(0,1.4)$) -- ($(#1)+(0,5.0)$);
+    \draw[txc, line width=0.8pt] ($(#1)+(0,3.0)$) -- ($(#1)+(-2.0,4.1)$);
+    \draw[txc, line width=0.8pt] ($(#1)+(0,3.0)$) -- ($(#1)+(2.0,4.1)$);
+    \draw[txc, line width=0.8pt] ($(#1)+(0,4.2)$) -- ($(#1)+(-1.4,5.5)$);
+    \draw[txc, line width=0.8pt] ($(#1)+(0,4.2)$) -- ($(#1)+(1.4,5.5)$);
+}
+\def\RxAP#1#2#3{%
+    \coordinate (#1) at (#2,#3);
+    \draw[rxc, fill=orange!11, line width=0.8pt] ($(#1)+(-1.4,-2.2)$) rectangle ($(#1)+(1.4,1.4)$);
+    \draw[rxc, line width=0.8pt] ($(#1)+(0,1.4)$) -- ($(#1)+(0,5.0)$);
+    \draw[rxc, line width=0.8pt] ($(#1)+(0,3.0)$) -- ($(#1)+(-2.0,4.1)$);
+    \draw[rxc, line width=0.8pt] ($(#1)+(0,3.0)$) -- ($(#1)+(2.0,4.1)$);
+    \draw[rxc, line width=0.8pt] ($(#1)+(0,4.2)$) -- ($(#1)+(-1.4,5.5)$);
+    \draw[rxc, line width=0.8pt] ($(#1)+(0,4.2)$) -- ($(#1)+(1.4,5.5)$);
+}
+\def\UEIcon#1#2#3{%
+    \draw[#2, line width=#3] ($(#1)+(0,4.35)$) circle (1.95);
+    \draw[#2, line width=#3] ($(#1)+(-4.1,-2.55)$) -- ($(#1)+(4.1,-2.55)$)
+        arc[start angle=0,end angle=180,x radius=4.1,y radius=4.95] -- cycle;
+}
+
+% Node icons.
+\TxAP{tx1}{7}{38}
+\node[label, anchor=north] at (tx1 |- 4,35.4) {Tx AP 1};
+\RxAP{rx1}{6}{21}
+\node[label, anchor=north] at (rx1 |- 4,18.4) {Rx AP 1};
+\TxAP{tx2}{10}{8}
+\node[label, anchor=north] at (tx2 |- 4,5.4) {Tx AP 2};
+\TxAP{txn}{28}{-5}
+\node[label, anchor=north] at (txn |- 4,-7.6) {Tx AP $N_{\mathrm{tx}}$};
+
+\RxAP{rx2}{72}{45}
+\node[label, anchor=north] at (rx2 |- 4,42.4) {Rx AP 2};
+\RxAP{rx3}{83}{26}
+\node[label, anchor=north] at (rx3 |- 4,23.4) {Rx AP 3};
+\RxAP{rxn}{68}{1}
+\node[label, anchor=north] at (rxn |- 4,-1.6) {Rx AP $N_{\mathrm{rx}}$};
+
+\draw[fronthaul] (cloudL) -- (tx1);
+\draw[fronthaul] (cloudL) -- (rx1);
+\draw[fronthaul] (cloudM) -- (tx2);
+\draw[fronthaul] (cloudM) -- (txn);
+\draw[fronthaul] (cloudR) -- (rx2);
+\draw[fronthaul] (cloudR) -- (rx3);
+\draw[fronthaul] (cloudM) -- (rxn);
+
+% Users.
+\coordinate (u1) at (28,30);
+\UEIcon{u1}{black!75}{0.8pt}
+\node[label, anchor=north] at ($(u1)+(0,-3.0)$) {UE 1};
+
+\coordinate (un) at (42,0);
+\UEIcon{un}{black!75}{0.8pt}
+\node[label, anchor=north] at ($(un)+(0,-3.0)$) {UE $N_{\mathrm{UE}}$};
+
+\coordinate (u3) at (61,10);
+\UEIcon{u3}{black!75}{0.8pt}
+\node[label, anchor=north] at ($(u3)+(0,-3.0)$) {UE 3};
+
+\coordinate (eveu) at (48,20);
+\UEIcon{eveu}{evec}{0.95pt}
+\node[label, text=evec, anchor=north] at ($(eveu)+(0,-3.0)$) {UE 2 (Eve)};
+
+% Targets.
+\coordinate (target) at (58,34);
+\draw[black!70, fill=black!8, line width=0.8pt] ($(target)+(-4,-1.0)$) rectangle ($(target)+(4,1.8)$);
+\draw[black!70, fill=black!4, line width=0.8pt] ($(target)+(-3.0,1.8)$)
+    -- ($(target)+(-1.5,3.6)$) -- ($(target)+(2.3,3.5)$)
+    -- ($(target)+(3.7,1.8)$) -- cycle;
+\draw[black!70, line width=0.7pt] ($(target)+(-1.0,1.8)$) -- ($(target)+(-0.6,3.4)$);
+\draw[black!70, line width=0.7pt] ($(target)+(1.5,1.8)$) -- ($(target)+(1.6,3.4)$);
+\draw[black!70, fill=black!55] ($(target)+(-2.7,-1.1)$) circle (0.8);
+\draw[black!70, fill=black!55] ($(target)+(2.7,-1.1)$) circle (0.8);
+\node[label, anchor=north] at ($(target)+(0,-2.1)$) {True Target};
+
+\coordinate (fake) at (31,11);
+\draw[black!35, fill=black!4, line width=0.75pt] ($(fake)+(-4,-1.0)$) rectangle ($(fake)+(4,1.8)$);
+\draw[black!35, fill=black!2, line width=0.75pt] ($(fake)+(-3.0,1.8)$)
+    -- ($(fake)+(-1.5,3.6)$) -- ($(fake)+(2.3,3.5)$)
+    -- ($(fake)+(3.7,1.8)$) -- cycle;
+\draw[black!35, fill=black!25] ($(fake)+(-2.7,-1.1)$) circle (0.8);
+\draw[black!35, fill=black!25] ($(fake)+(2.7,-1.1)$) circle (0.8);
+\node[label, anchor=north] at ($(fake)+(0,-2.1)$) {Fake Target};
+
+% Signal paths.
+\draw[comm] (tx1) -- ($(u1)+(-3.6,0.8)$);
+\draw[comm] (txn) -- ($(un)+(-3.7,-0.5)$);
+\draw[comm] (rx3) -- ($(u3)+(3.5,0.7)$);
+
+\draw[sensing] (tx1) -- ($(target)+(-4.3,1.0)$);
+\draw[sensing] ($(target)+(4.0,1.0)$) -- ($(rx2)+(0,4.9)$);
+\draw[sensing] ($(target)+(4.0,0.2)$) -- ($(rx3)+(0,4.9)$);
+\draw[sensing] ($(rx3)+(0,4.0)$) -- ($(target)+(4.2,-0.7)$);
+
+\draw[an] (tx1) -- ($(fake)+(-3.9,1.0)$);
+\draw[an] (tx2) -- ($(fake)+(-3.8,0.0)$);
+\draw[an] (txn) -- ($(fake)+(0.0,-1.2)$);
+
+\draw[eve] (txn) .. controls (36,7) and (41,16) .. ($(eveu)+(-3.8,0.8)$);
+\draw[eve] (rx3) .. controls (70,16) and (58,21) .. ($(eveu)+(3.8,1.0)$);
+
+% Legend.
+\draw[an] (88,43) -- (95,43);
+\node[anchor=west] at (96,43) {Artificial Noise Signal};
+\draw[sensing] (88,37.5) -- (95,37.5);
+\node[anchor=west] at (96,37.5) {Sensing Signal};
+\draw[comm] (88,32) -- (95,32);
+\node[anchor=west] at (96,32) {Communication Signal};
+\draw[eve] (88,26.5) -- (95,26.5);
+\node[anchor=west] at (96,26.5) {Eavesdropping Signal};
+\draw[fronthaul, line width=0.9pt] (88,21) -- (95,21);
+\node[anchor=west] at (96,21) {Fronthaul Links};
+\end{tikzpicture}
